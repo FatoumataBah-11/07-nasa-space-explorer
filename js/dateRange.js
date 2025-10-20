@@ -1,5 +1,6 @@
-
-// NOTE: You do not need to edit this file.
+// dateRange.js
+// NOTE: This file only sets up the date inputs and DOES NOT declare or query the inputs itself.
+// It exposes the setupDateInputs(startInput, endInput) function which the main script calls.
 
 // NASA's APOD API only has images from June 16, 1995 onwards
 const earliestDate = '1995-06-16';
@@ -8,6 +9,8 @@ const earliestDate = '1995-06-16';
 const today = new Date().toISOString().split('T')[0];
 
 function setupDateInputs(startInput, endInput) {
+  if (!startInput || !endInput) return;
+
   // Restrict date selection range from NASA's first image to today
   startInput.min = earliestDate;
   startInput.max = today;
@@ -20,8 +23,9 @@ function setupDateInputs(startInput, endInput) {
   startInput.value = lastWeek.toISOString().split('T')[0];
   endInput.value = today;
 
-  // Automatically adjust end date to show exactly 9 days of images
+  // Automatically adjust end date to show exactly 9 days of images when user changes start
   startInput.addEventListener('change', () => {
+    if (!startInput.value) return;
     const startDate = new Date(startInput.value);
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 8);
