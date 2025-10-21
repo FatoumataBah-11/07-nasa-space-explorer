@@ -1,34 +1,10 @@
-// dateRange.js
-// NOTE: This file only sets up the date inputs and DOES NOT declare or query the inputs itself.
-// It exposes the setupDateInputs(startInput, endInput) function which the main script calls.
-
-// NASA's APOD API only has images from June 16, 1995 onwards
-const earliestDate = '1995-06-16';
-
-// Get today's date in YYYY-MM-DD format (required by date inputs)
-const today = new Date().toISOString().split('T')[0];
-
 function setupDateInputs(startInput, endInput) {
-  if (!startInput || !endInput) return;
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const todayStr = `${yyyy}-${mm}-${dd}`;
 
-  // Restrict date selection range from NASA's first image to today
-  startInput.min = earliestDate;
-  startInput.max = today;
-  endInput.min = earliestDate;
-  endInput.max = today;
-
-  // Default: Show the most recent 9 days of space images
-  const lastWeek = new Date();
-  lastWeek.setDate(lastWeek.getDate() - 8); // minus 8 because it includes today
-  startInput.value = lastWeek.toISOString().split('T')[0];
-  endInput.value = today;
-
-  // Automatically adjust end date to show exactly 9 days of images when user changes start
-  startInput.addEventListener('change', () => {
-    if (!startInput.value) return;
-    const startDate = new Date(startInput.value);
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 8);
-    endInput.value = endDate > new Date(today) ? today : endDate.toISOString().split('T')[0];
-  });
+  if (startInput) startInput.max = todayStr;
+  if (endInput) endInput.max = todayStr;
 }
